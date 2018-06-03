@@ -23,7 +23,8 @@ RUN \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ADD . /bitshares-core
+#ADD . /bitshares-core
+RUN git clone https://github.com/bitshares/bitshares-core.git
 WORKDIR /bitshares-core
 
 # Compile
