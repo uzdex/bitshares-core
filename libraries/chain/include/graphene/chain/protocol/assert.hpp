@@ -71,13 +71,40 @@ namespace graphene { namespace chain {
    };
 
    /**
+    * Used to verify that the receiving party has the pre-image.
+    * This is used for escrow (HTLC). To unlock, a signed transaction
+    * from pay_to must pass in the pre-image such that
+    * hash_func(pre-image) equals key_hash.
+    */
+   struct hash_operation_predicate
+   {
+      account_id_type pay_to;
+      enum { SHA256, HASH160 } hash_func;
+      int64_t key_hash; // = hash_func(pre-image)
+      int64_t key_size; // size of key used to create key_hash
+   };
+
+   /**
+    * Used as the transaction failed and the hold on funds should
+    * be removed. To unlock, a signed transaction from pay_to
+    * must update the escrow_contract_operation after epoch
+    */
+   struct timeout_operation_predicate
+   {
+      account_id_type pay_to;
+      uint64_t epoch;
+   };
+
+   /**
     *  When defining predicates do not make the protocol dependent upon
     *  implementation details.
     */
    typedef static_variant<
       account_name_eq_lit_predicate,
       asset_symbol_eq_lit_predicate,
-      block_id_predicate
+      block_id_predicate,
+      hash_operation_predicate,
+      timeout_operation_predicate
      > predicate;
 
 
@@ -109,6 +136,8 @@ FC_REFLECT( graphene::chain::assert_operation::fee_parameters_type, (fee) )
 FC_REFLECT( graphene::chain::account_name_eq_lit_predicate, (account_id)(name) )
 FC_REFLECT( graphene::chain::asset_symbol_eq_lit_predicate, (asset_id)(symbol) )
 FC_REFLECT( graphene::chain::block_id_predicate, (id) )
+FC_REFLECT( graphene::chain::hash_operation_predicate, (pay_to)(hash_func)(key_hash)(key_size))
+FC_REFLECT( graphene::chain::timeout_operation_predicate, (pay_to)(epoch))
 FC_REFLECT_TYPENAME( graphene::chain::predicate )
 FC_REFLECT( graphene::chain::assert_operation, (fee)(fee_paying_account)(predicates)(required_auths)(extensions) )
  
