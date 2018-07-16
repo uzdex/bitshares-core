@@ -79,8 +79,8 @@ namespace bpo = boost::program_options;
 namespace detail {
 
    graphene::chain::genesis_state_type create_example_genesis() {
-      auto nathan_key = fc::ecc::private_key::regenerate(fc::sha256::hash(string("nathan")));
-      dlog("Allocating all stake to ${key}", ("key", utilities::key_to_wif(nathan_key)));
+      auto uzdex_key = fc::ecc::private_key::regenerate(fc::sha256::hash(string("uzdex")));
+      dlog("Allocating all stake to ${key}", ("key", utilities::key_to_wif(uzdex_key)));
       graphene::chain::genesis_state_type initial_state;
       initial_state.initial_parameters.current_fees = fee_schedule::get_default();//->set_all_fees(GRAPHENE_BLOCKCHAIN_PRECISION);
       initial_state.initial_active_witnesses = GRAPHENE_DEFAULT_MIN_WITNESS_COUNT;
@@ -91,15 +91,15 @@ namespace detail {
       {
          auto name = "init"+fc::to_string(i);
          initial_state.initial_accounts.emplace_back(name,
-                                                     nathan_key.get_public_key(),
-                                                     nathan_key.get_public_key(),
+                                                     uzdex_key.get_public_key(),
+                                                     uzdex_key.get_public_key(),
                                                      true);
          initial_state.initial_committee_candidates.push_back({name});
-         initial_state.initial_witness_candidates.push_back({name, nathan_key.get_public_key()});
+         initial_state.initial_witness_candidates.push_back({name, uzdex_key.get_public_key()});
       }
 
-      initial_state.initial_accounts.emplace_back("nathan", nathan_key.get_public_key());
-      initial_state.initial_balances.push_back({nathan_key.get_public_key(),
+      initial_state.initial_accounts.emplace_back("uzdex", uzdex_key.get_public_key());
+      initial_state.initial_balances.push_back({uzdex_key.get_public_key(),
                                                 GRAPHENE_SYMBOL,
                                                 GRAPHENE_MAX_SHARE_SUPPLY});
       initial_state.initial_chain_id = fc::sha256::hash( "BOGUS" );
@@ -166,23 +166,6 @@ void application_impl::reset_p2p_node(const fc::path& data_dir)
    {
       // https://bitsharestalk.org/index.php/topic,23715.0.html
       vector<string> seeds = {
-         "104.236.144.84:1777",               // puppies      (USA)
-         "128.199.143.47:2015",               // Harvey       (Singapore)
-         "23.92.53.182:1776",                 // sahkan       (USA)
-         "192.121.166.162:1776",              // sahkan       (UK)
-         "51.15.61.160:1776",                 // lafona       (France)
-         "bts-seed1.abit-more.com:62015",     // abit         (China)
-         "node.blckchnd.com:4243",            // blckchnd     (Germany)
-         "seed.bitsharesdex.com:50696",       // iHashFury    (Europe)
-         "seed.bitsharesnodes.com:1776",      // wackou       (Netherlands)
-         "seed.blocktrades.us:1776",          // BlockTrades  (USA)
-         "seed.cubeconnex.com:1777",          // cube         (USA)
-         "seed.roelandp.nl:1776",             // roelandp     (Canada)
-         "seed04.bts-nodes.net:1776",         // Thom         (Australia)
-         "seed05.bts-nodes.net:1776",          // Thom         (USA)
-         "seed06.bts-nodes.net:1776",          // Thom         (USA)
-         "seed07.bts-nodes.net:1776",          // Thom         (Singapore)
-         "seeds.bitshares.eu:1776"            // pc           (http://seeds.quisquis.de/bitshares.html)
       };
       for( const string& endpoint_string : seeds )
       {

@@ -8,6 +8,8 @@ Makefile
 compile_commands.json
 moc_*
 *.moc
+*.user
+*.autosave
 
 genesis.json
 hardfork.hpp
